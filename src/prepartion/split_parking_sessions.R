@@ -43,14 +43,14 @@ parking_sessions_pre_covid <- subset(
 parking_sessions_during_covid <- subset(
   parking_sessions,
   startofsession >= as.POSIXct("2020-03-16 00:00:00") &
-    endofsession <= as.POSIXct("2021-07-18 23:59:59")
+  endofsession <= as.POSIXct("2021-05-16 23:59:59")
 )
 
 ### Post COVID - Now
 parking_sessions_post_covid <- subset(
   parking_sessions,
-  startofsession >= as.POSIXct("2021-07-19 00:00:00") &
-    endofsession <= as.POSIXct("2021-12-31 23:59:59")
+  startofsession >= as.POSIXct("2021-05-17 00:00:00") &
+  endofsession <= as.POSIXct("2021-07-31 23:59:59")
 )
 
 ## Save data

@@ -1,51 +1,133 @@
 # Basic Data Analysis
 
-## Load data (WARNING: these files are very large)
-parking_sessions <- data.table::fread("./data/parking_sessions.csv.txt",
-                                      header = TRUE,
-                                      sep = ",")
-vehicles <- data.table::fread("./data/vehicles.csv",
-                              header = TRUE,
-                              sep = ",")
-zones <- data.table::fread("./data/zones.csv.txt",
-                           header = TRUE,
-                           sep = ",")
-# making hard subset
-subset_parking_sessions <- parking_sessions[c(1:5000),]
+## Set subset ("pre", "during", "post")
+subset <- "post"
+title <- paste("(", subset, " covid-19)", sep = "")
 
-# cleaning
+## Load data
+file_name <- paste("./data/parking_sessions_", subset, "_covid.csv", sep = "")
+parking_sessions <- data.table::fread(file_name, header = TRUE, sep = ",")
 
-# exploratory analysis
-  # Barcharts
-# plots histogram / density plot / iscorporate 
-hist(subset_parking_sessions$iscorporate, breaks = 20, 
-     main = "Split between consumer and professional usage",
-     xlab = "Isprofessional = 1",
-     probability = TRUE,
-     col = "peachpuff")
-lines(density(subset_parking_sessions$iscorporate, na.rm=TRUE), lwd = 2, col = "chocolate3") # removed NAs
+## Clean data
 
-# bar plots of iscorporate
-library(ggplot2)
-library(reshape)
-# counting number of data points
-incorporaterows <- sum(subset_parking_sessions$iscorporate)
-consumerrows <- length(subset_parking_sessions$iscorporate)-incorporaterows
-len = c(consumerrows, incorporaterows)
-##get frequencies of col d
-test.summary<-table(subset_parking_sessions$iscorporate)
-## re-shape the data 
-test.summary.m<-reshape::melt(test.summary)
-ggplot2::ggplot(test.summary.m,aes(x=as.factor(Var.1),y=value)) +
-  geom_bar(stat="identity", fill="steelblue")+
-  geom_text(aes(label=len), vjust=1.6, color="white", size=3.5)+
-  theme_minimal()+ labs(x = "Is corporate or not", y = "Number of rows")
+### Set is corporate string to "UNKNOWN"
+parking_sessions$iscorporate[parking_sessions$iscorporate == ""] <- "UNKNOWN"
 
-  # check NAs
-library(naniar)
-naniar::vis_miss(subset_parking_sessions)
-  # outliers - boxplot + grubb test ?
-# timespan - time series graph
-  # plot number of parking reservations per day
-# how to model - regression - which variables - hypotheses
+### Set on street empty string to "UNKNOWN"
+parking_sessions$onstreet[parking_sessions$onstreet == ""] <- "UNKNOWN"
 
+### Set vehicle description empty string to "UNKNOWN"
+parking_sessions$vehicledescription[parking_sessions$vehicledescription == ""] <- "UNKNOWN"
+
+### Set fuel group empty string to "UNKNOWN"
+parking_sessions$FuelGroup[parking_sessions$FuelGroup == ""] <- "UNKNOWN"
+
+### Set interface empty string to "UNKNOWN"
+parking_sessions$Interface[parking_sessions$Interface == ""] <- "UNKNOWN"
+
+### Create session duration column (minutes)
+parking_sessions$sessionduration <- difftime(parking_sessions$endofsession,
+                                             parking_sessions$startofsession)
+parking_sessions$sessionduration <- as.numeric(parking_sessions$sessionduration)
+
+## Create subset
+columns <- c("sessionid",
+             "purchasedate",
+             "startofsession",
+             "endofsession",
+             "sessionduration",
+             "iscorporate",
+             "userid",
+             "vehcileid",
+             "onstreet",
+             "vehicledescription",
+             "FuelGroup",
+             "zoneid",
+             "Interface",
+             "qtypurchases")
+parking_sessions_subset <- parking_sessions[, ..columns]
+
+## Descriptive statistics
+
+### Summary
+sapply(parking_sessions_subset, summary)
+
+### Number of NA's
+sapply(parking_sessions_subset, function(x) {
+  result <- c(length(x),
+              sum(is.na(x)),
+              ifelse(is.character(x), sum(x == ""), 0))
+  names(result) <- c("Length", "No. NA", "No. Empty")
+  
+  return(result)
+})
+
+## Create plots
+
+### parking sessions over time: timeseries
+ggplot2::ggplot(parking_sessions) +
+  ggplot2::aes(x = format(startofsession, "%Y-%m")) +
+  ggplot2::geom_bar() +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = paste("Parking Sessions Over Time", title),
+                x = "Dates",
+                y = "Frequency")
+
+### is corporate: barplot
+counts <- table(parking_sessions$iscorporate)
+
+plt <- barplot(counts,
+               main = paste("Is Corporate Distribution", title),
+               xlab = "Is Corporate or Not",
+               ylab = "Frequency")
+text(plt, 0, as.character(counts), cex = 1, pos = 3)
+
+### on street: barplot
+counts <- table(parking_sessions$onstreet)
+
+plt <- barplot(counts,
+               main = paste("On Street Distribution", title),
+               xlab = "On Street or Parking Garage",
+               ylab = "Frequency")
+text(plt, 0, as.character(counts), cex = 1, pos = 3)
+
+
+### vehicle description: barplot
+counts <- table(parking_sessions$vehicledescription)
+
+plt <- barplot(counts,
+               main = paste("Vehicle Description Distribution", title),
+               xlab = "Vehicle Type",
+               ylab = "Frequency")
+text(plt, 0, as.character(counts), cex = 1, pos = 3)
+
+### fuel group: barplot
+counts <- table(parking_sessions$FuelGroup)
+
+plt <- barplot(counts,
+               main = paste("Fuel Group Distribution", title),
+               xlab = "Type of fuel",
+               ylab = "Frequency")
+text(plt, 0, as.character(counts), cex = 1, pos = 3)
+
+### top 10 zones over time: time series
+
+# TODO: plot top 10 zones over time
+
+### top 10 zones: barplot
+counts <- sort(table(parking_sessions$zoneid), decreasing = TRUE)[1:10]
+
+plt <- barplot(counts,
+               main = paste("Top 10 Zones", title),
+               xlab = "Zone ID",
+               ylab = "Frequency")
+text(plt, 0, as.character(counts), cex = 1, pos = 3)
+
+### interface: barplot
+counts <- table(parking_sessions$Interface)
+
+plt <- barplot(counts,
+               main = paste("Interface Distribution", title),
+               xlab="Interface",
+               ylab = "Frequency")
+text(plt, 0, as.character(counts), cex = 1, pos = 3)
