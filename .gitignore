@@ -126,6 +126,12 @@ $RECYCLE.BIN/
 
 ### Custom ###
 # ParkNow data
+data/parking_sessions_2019.csv
+data/parking_sessions_2020.csv
+data/parking_sessions_2021.csv
+data/parking_sessions_pre_covid.csv
+data/parking_sessions_during_covid.csv
+data/parking_sessions_post_covid.csv
 data/parking_sessions.csv
 data/vehicles.csv
 data/zones.csv
