@@ -20,3 +20,5 @@ Prerequisites:
 [Renv Docs](https://rstudio.github.io/renv/index.html)
 
 [Lintr Docs](https://github.com/jimhester/lintr)
+
+[Shiny Docs](https://shiny.rstudio.com/)
