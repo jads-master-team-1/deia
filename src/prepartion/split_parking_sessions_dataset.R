@@ -1,4 +1,4 @@
-# Split Parking Sessions
+# Split Parking Sessions Dataset
 
 ## Load data (WARNING: this file is very large)
 parking_sessions <- data.table::fread("./data/parking_sessions.csv",
