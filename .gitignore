@@ -132,6 +132,7 @@ data/parking_sessions_2021.csv
 data/parking_sessions_pre_covid.csv
 data/parking_sessions_during_covid.csv
 data/parking_sessions_post_covid.csv
+data/parking_sessions_ev_hv.csv
 data/parking_sessions.csv
 data/vehicles.csv
 data/zones.csv
