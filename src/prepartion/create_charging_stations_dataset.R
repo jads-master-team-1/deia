@@ -15,7 +15,15 @@ columns <- c("chargeDeviceID",
              "chargeDeviceStatus",
              "locationType",
              "dateCreated",
-             "dateUpdated")
+             "dateUpdated",
+             "connector1ID",
+             "connector2ID",
+             "connector3ID",
+             "connector4ID",
+             "connector5ID",
+             "connector6ID",
+             "connector7ID",
+             "connector8ID")
 charging_stations <- charging_stations[, ..columns]
 
 ## Clean data
@@ -32,11 +40,33 @@ charging_stations$chargeDeviceStatus <- toupper(charging_stations$chargeDeviceSt
 ### Convert location type string to uppercase
 charging_stations$locationType <- toupper(charging_stations$locationType)
 
+### Remove punctuation from name
+charging_stations$name <- gsub(",", "", charging_stations$name)
+
+### Remove punctuation from town
+charging_stations$town <- gsub(",", "", charging_stations$town)
+
 ### Set NA name string to "UNKNOWN"
 charging_stations$name[is.na(charging_stations$name)] <- "UNKNOWN"
 
 ### Set NA town string to "UNKNOWN"
 charging_stations$town[is.na(charging_stations$town)] <- "UNKNOWN"
+
+### Create connector count column
+charging_stations$connectorcount <- (!is.na(charging_stations$connector1ID)) +
+                                    (!is.na(charging_stations$connector2ID)) +
+                                    (!is.na(charging_stations$connector3ID)) +
+                                    (!is.na(charging_stations$connector4ID)) +
+                                    (!is.na(charging_stations$connector5ID)) +
+                                    (!is.na(charging_stations$connector6ID)) +
+                                    (!is.na(charging_stations$connector7ID)) +
+                                    (!is.na(charging_stations$connector8ID))
+
+### Remove connector id columns
+charging_stations <- charging_stations[, -c("connector1ID", "connector2ID",
+                                            "connector3ID", "connector4ID",
+                                            "connector5ID", "connector6ID",
+                                            "connector7ID", "connector8ID")]
 
 ## Rename columns
 data.table::setnames(charging_stations, "chargeDeviceID", "chargedeviceid")
