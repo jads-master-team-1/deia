@@ -5,8 +5,19 @@ parking_sessions <- data.table::fread("./data/parking_sessions.csv",
                                       header = TRUE,
                                       sep = ",")
 
+## Set types
+parking_sessions$startofsession <- as.POSIXct(parking_sessions$startofsession)
+parking_sessions$endofsession <- as.POSIXct(parking_sessions$endofsession)
+
 ## Filter rows (FuelGroup = ELECTRIC | HYBRID)
 parking_sessions <- parking_sessions[FuelGroup == "ELECTRIC" | FuelGroup == "HYBRID"]
+
+## Filter rows (startofsession >= 2020-07-31 & endofsession <= 2021-07-31)
+parking_sessions <- subset(
+  parking_sessions,
+  startofsession >= as.POSIXct("2020-07-31 00:00:00") &
+    endofsession <= as.POSIXct("2021-07-31 23:59:59")
+)
 
 ## Load vehicles, vehicle brands & zones data
 vehicles <- data.table::fread("./data/vehicles.csv", header = TRUE, sep = ",")
