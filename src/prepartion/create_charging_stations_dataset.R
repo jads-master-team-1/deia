@@ -52,6 +52,12 @@ charging_stations$name[is.na(charging_stations$name)] <- "UNKNOWN"
 ### Set NA town string to "UNKNOWN"
 charging_stations$town[is.na(charging_stations$town)] <- "UNKNOWN"
 
+### Set dateCreated 0000-00-00 00:00:00 string to "NA"
+charging_stations$dateCreated[charging_stations$dateCreated == "0000-00-00 00:00:00"] <- NA
+
+### Set dateUpdated 0000-00-00 00:00:00 string to "NA"
+charging_stations$dateUpdated[charging_stations$dateUpdated == "0000-00-00 00:00:00"] <- NA
+
 ### Create connector count column
 charging_stations$connectorcount <- (!is.na(charging_stations$connector1ID)) +
                                     (!is.na(charging_stations$connector2ID)) +
@@ -67,6 +73,16 @@ charging_stations <- charging_stations[, -c("connector1ID", "connector2ID",
                                             "connector3ID", "connector4ID",
                                             "connector5ID", "connector6ID",
                                             "connector7ID", "connector8ID")]
+
+## Set types
+charging_stations$dateCreated <- as.POSIXct(charging_stations$dateCreated)
+charging_stations$dateUpdated <- as.POSIXct(charging_stations$dateUpdated)
+
+## Filter rows (dateCreated <= 2020-07-31)
+charging_stations <- subset(
+  charging_stations,
+  dateCreated >= as.POSIXct("2020-07-31 00:00:00")
+)
 
 ## Rename columns
 data.table::setnames(charging_stations, "chargeDeviceID", "chargedeviceid")
