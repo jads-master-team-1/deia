@@ -15,7 +15,7 @@ parking_sessions <- parking_sessions[FuelGroup == "ELECTRIC" | FuelGroup == "HYB
 ## Filter rows (startofsession >= 2020-07-31 & endofsession <= 2021-07-31)
 parking_sessions <- subset(
   parking_sessions,
-  startofsession >= as.POSIXct("2020-07-31 00:00:00") &
+  startofsession >= as.POSIXct("2021-01-31 00:00:00") &
     endofsession <= as.POSIXct("2021-07-31 23:59:59")
 )
 
