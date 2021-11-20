@@ -81,7 +81,7 @@ charging_stations$dateUpdated <- as.POSIXct(charging_stations$dateUpdated)
 ## Filter rows (dateCreated <= 2020-07-31)
 charging_stations <- subset(
   charging_stations,
-  dateCreated <= as.POSIXct("2021-01-31 00:00:00")
+  dateCreated <= as.POSIXct("2021-02-01 00:00:00")
 )
 
 ## Rename columns
