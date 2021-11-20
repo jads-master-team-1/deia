@@ -77,6 +77,7 @@ server <- function(input, output) {
       leaflet::addLegend("bottomleft",
                          pal = parking_zones_palette,
                          values = parking_zones_color,
+                         opacity = 1.0,
                          title="Session Duration (Average)") %>%
 
       # Add charging stations layer
@@ -91,6 +92,7 @@ server <- function(input, output) {
       leaflet::addLegend("bottomright",
                          pal = charging_stations_palette,
                          values = charging_stations_color,
+                         opacity = 1.0,
                          title="Connector Count") %>%
 
       # Set base view
