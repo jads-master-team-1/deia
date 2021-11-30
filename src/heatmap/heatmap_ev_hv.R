@@ -1,8 +1,8 @@
 library(dplyr)
 
 # Settings
-parking_zones_file <- "./data/parking_aggregated.csv"
-charging_stations_file <- "./data/charging_stations.csv"
+parking_zones_file <- "./data/parking_aggregated_ev_hv.csv"
+charging_stations_file <- "./data/charging_stations_Scotland.csv"
 
 parking_zones_size_factor <- 1000
 parking_zones_color_map <- rev(RColorBrewer::brewer.pal(8, "Greens"))
@@ -10,7 +10,7 @@ parking_zones_color_bins <- 8
 parking_zones_opacity <- 0.5
 
 charging_stations_size_factor <- 50
-charging_stations_color_map <- rev(RColorBrewer::brewer.pal(8, "Blues"))
+charging_stations_color_map <- rev(RColorBrewer::brewer.pal(8, "YlOrBr"))
 charging_stations_color_bins <- 8
 charging_stations_opacity <- 0.5
 

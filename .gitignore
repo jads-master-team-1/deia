@@ -278,7 +278,10 @@ $RECYCLE.BIN/
 ### Custom ###
 # ParkNow data
 data/parking_aggregated.csv
+data/parking_aggregated_ev.csv
+data/parking_aggregated_ev_hv.csv
 data/charging_stations.csv
+data/charging_stations_Scotland
 data/parking_sessions_2019.csv
 data/parking_sessions_2020.csv
 data/parking_sessions_2021.csv
@@ -286,6 +289,7 @@ data/parking_sessions_pre_covid.csv
 data/parking_sessions_during_covid.csv
 data/parking_sessions_post_covid.csv
 data/parking_sessions_ev_hv.csv
+data/parking_sessions_ev.csv
 data/parking_sessions.csv
 data/vehicle_brands.csv
 data/vehicles.csv
