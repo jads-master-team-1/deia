@@ -7,6 +7,7 @@ library(dplyr)
 parking_zones_file <- "./data/parking_aggregated_ev.csv"
 charging_stations_government_file <- "./data/charging_stations_government_scotland.csv"
 charging_stations_openchargemap_file <- "./data/charging_stations_openchargemap_scotland.csv"
+charging_stations_coordinate_precision <- 4 # gov -> lat: 5.78, long: 5.77 ocm -> lat: 6.85, long: 7.34 
 
 parking_zones_size_factor <- 1000
 parking_zones_color <- "#006D2C"
@@ -54,8 +55,12 @@ server <- function(input, output) {
   charging_stations_openchargemap$source <- "OPENCHARGEMAP"
   
   # Discard duplicate charging stations data
-  charging_stations_government <- charging_stations_government[charging_stations_government$latitude %!in% charging_stations_openchargemap$latitude &
-                                                               charging_stations_government$longitude %!in% charging_stations_openchargemap$longitude]
+  charging_stations_government <- charging_stations_government[round(charging_stations_government$latitude,
+                                                                     digits = charging_stations_coordinate_precision) %!in% round(charging_stations_openchargemap$latitude,
+                                                                                                                                  digits = charging_stations_coordinate_precision) &
+                                                               round(charging_stations_government$longitude,
+                                                                     digits = charging_stations_coordinate_precision) %!in% round(charging_stations_openchargemap$longitude,
+                                                                                                                                  digits = charging_stations_coordinate_precision)]
   
   # Merge charging stations data
   charging_stations <- rbind(charging_stations_government, charging_stations_openchargemap)
@@ -67,6 +72,35 @@ server <- function(input, output) {
   charging_stations_color <- unique(charging_stations[["connectorcount"]])
   charging_stations_palette <- leaflet::colorFactor(charging_stations_color_map,
                                                     charging_stations_color)
+  
+  # Log settings
+  cat(paste("[INFO] Showing Map -",
+            "LAT:",
+            map_latitude,
+            "-",
+            "LONG:",
+            map_longitude,
+            "-",
+            "ZOOM:",
+            map_zoom,
+            "\n"))
+  cat(paste("[INFO] Showing Parking Zones -",
+            "PN (1259):",
+            nrow(parking_zones),
+            "\n"))
+  cat(paste("[INFO] Showing Charging Stations -",
+            "GOV (1122):",
+            nrow(charging_stations_government),
+            "-",
+            "OCM (1453):",
+            nrow(charging_stations_openchargemap),
+            "-",
+            "TOT (2575):",
+            nrow(charging_stations),
+            "-",
+            "PRC:",
+            charging_stations_coordinate_precision,
+            "\n"))
 
   # Create map
   output$map <- leaflet::renderLeaflet({
