@@ -1,7 +1,7 @@
-# Create Charging Station Dataset
+# Create Government Charging Station Dataset
 
 ## Load charging stations data
-charging_stations <- data.table::fread("./data/charging_stations.csv",
+charging_stations <- data.table::fread("./data/government/chargepoints.csv",
                                        header = TRUE,
                                        sep = ",",
                                        na.strings = c("", "NULL", "NA"))
@@ -93,6 +93,6 @@ data.table::setnames(charging_stations, "dateUpdated", "dateupdated")
 
 ## Save data
 data.table::fwrite(charging_stations,
-                   "./data/charging_stations.csv",
+                   "./data/charging_stations_government.csv",
                    row.names = FALSE,
                    quote = FALSE)
